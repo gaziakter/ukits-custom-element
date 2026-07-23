@@ -4503,6 +4503,47 @@ body {
   #benefits .benefits-copy {
     flex: 0 0 490px !important;
   }
+
+  #benefits .benefits-copy {
+    display: flex !important;
+    flex-direction: column !important;
+    height: auto !important;
+    min-height: 0 !important;
+  }
+
+  #benefits .benefits-eyebrow,
+  #benefits .benefits-heading-wrap,
+  #benefits .benefits-description-wrap,
+  #benefits .benefits-list,
+  #benefits .benefits-button {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  #benefits .benefits-heading-wrap {
+    margin-top: 24px !important;
+  }
+
+  #benefits .benefits-heading {
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  #benefits .benefits-description-wrap {
+    margin-top: 24px !important;
+  }
+
+  #benefits .benefits-description {
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  #benefits .benefits-list {
+    margin-top: 48px !important;
+  }
 }
 
 /* HowItWorks section full-width override. */
