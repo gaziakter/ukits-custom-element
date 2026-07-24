@@ -3183,56 +3183,6 @@ class UKITS_Custom_Element_Testimonials_Section extends UKITS_Custom_Element_Tem
 		$this->end_controls_section();
 
 		$this->start_controls_section(
-			'stats_section',
-			array(
-				'label' => esc_html__( 'Stats Repeater', 'ukits-custom-element' ),
-				'tab'   => Controls_Manager::TAB_CONTENT,
-			)
-		);
-
-		$stats = new Repeater();
-
-		$stats->add_control(
-			'value',
-			array(
-				'label'   => esc_html__( 'Value', 'ukits-custom-element' ),
-				'type'    => Controls_Manager::TEXT,
-				'default' => '4.9',
-			)
-		);
-
-		$stats->add_control(
-			'label',
-			array(
-				'label'   => esc_html__( 'Label', 'ukits-custom-element' ),
-				'type'    => Controls_Manager::TEXT,
-				'default' => esc_html__( 'AVERAGE RATING', 'ukits-custom-element' ),
-			)
-		);
-
-		$this->add_control(
-			'stats',
-			array(
-				'label'       => esc_html__( 'Stats', 'ukits-custom-element' ),
-				'type'        => Controls_Manager::REPEATER,
-				'fields'      => $stats->get_controls(),
-				'title_field' => '{{{ value }}} - {{{ label }}}',
-				'default'     => array(
-					array(
-						'value' => '4.9',
-						'label' => 'AVERAGE RATING',
-					),
-					array(
-						'value' => '5000+',
-						'label' => 'HAPPY STUDENTS',
-					),
-				),
-			)
-		);
-
-		$this->end_controls_section();
-
-		$this->start_controls_section(
 			'testimonials_section',
 			array(
 				'label' => esc_html__( 'Testimonials Repeater', 'ukits-custom-element' ),
@@ -3290,6 +3240,27 @@ class UKITS_Custom_Element_Testimonials_Section extends UKITS_Custom_Element_Tem
 			)
 		);
 
+		$testimonials->add_control(
+			'stars_count',
+			array(
+				'label'   => esc_html__( 'Stars Count', 'ukits-custom-element' ),
+				'type'    => Controls_Manager::NUMBER,
+				'min'     => 0,
+				'max'     => 5,
+				'step'    => 1,
+				'default' => 5,
+			)
+		);
+
+		$testimonials->add_control(
+			'rating_text',
+			array(
+				'label'   => esc_html__( 'Rating Text', 'ukits-custom-element' ),
+				'type'    => Controls_Manager::TEXT,
+				'default' => esc_html__( '4.9/5', 'ukits-custom-element' ),
+			)
+		);
+
 		$this->add_control(
 			'testimonials',
 			array(
@@ -3304,6 +3275,8 @@ class UKITS_Custom_Element_Testimonials_Section extends UKITS_Custom_Element_Tem
 						'name'       => 'JAMES MITCHELL',
 						'role'       => 'WAREHOUSE OPERATOR',
 						'location'   => 'MANCHESTER',
+						'stars_count' => 5,
+						'rating_text' => '4.9/5',
 					),
 					array(
 						'quote_icon' => array( 'url' => UKITS_CUSTOM_ELEMENT_URL . 'assets/img/quote-green.svg' ),
@@ -3311,6 +3284,8 @@ class UKITS_Custom_Element_Testimonials_Section extends UKITS_Custom_Element_Tem
 						'name'       => 'SARAH THOMPSON',
 						'role'       => 'LOGISTICS MANAGER',
 						'location'   => 'BIRMINGHAM',
+						'stars_count' => 5,
+						'rating_text' => '4.9/5',
 					),
 					array(
 						'quote_icon' => array( 'url' => UKITS_CUSTOM_ELEMENT_URL . 'assets/img/quote-green.svg' ),
@@ -3318,6 +3293,8 @@ class UKITS_Custom_Element_Testimonials_Section extends UKITS_Custom_Element_Tem
 						'name'       => 'DAVID CHEN',
 						'role'       => 'CERTIFIED OPERATOR',
 						'location'   => 'LONDON',
+						'stars_count' => 5,
+						'rating_text' => '4.9/5',
 					),
 				),
 			)
@@ -3409,40 +3386,6 @@ class UKITS_Custom_Element_Testimonials_Section extends UKITS_Custom_Element_Tem
 		$this->end_controls_section();
 
 		$this->start_controls_section(
-			'stats_style',
-			array(
-				'label' => esc_html__( 'Stats Repeater Style', 'ukits-custom-element' ),
-				'tab'   => Controls_Manager::TAB_STYLE,
-			)
-		);
-
-		$this->add_control(
-			'stats_value_color',
-			array(
-				'label'     => esc_html__( 'Value Color', 'ukits-custom-element' ),
-				'type'      => Controls_Manager::COLOR,
-				'default'   => '#48842b',
-				'selectors' => array(
-					'{{WRAPPER}} #testimonials .testimonial-stat-value' => 'color: {{VALUE}};',
-				),
-			)
-		);
-
-		$this->add_control(
-			'stats_label_color',
-			array(
-				'label'     => esc_html__( 'Label Color', 'ukits-custom-element' ),
-				'type'      => Controls_Manager::COLOR,
-				'default'   => '#99a1af',
-				'selectors' => array(
-					'{{WRAPPER}} #testimonials .testimonial-stat-label' => 'color: {{VALUE}};',
-				),
-			)
-		);
-
-		$this->end_controls_section();
-
-		$this->start_controls_section(
 			'card_style',
 			array(
 				'label' => esc_html__( 'Testimonials Repeater Style', 'ukits-custom-element' ),
@@ -3510,11 +3453,50 @@ class UKITS_Custom_Element_Testimonials_Section extends UKITS_Custom_Element_Tem
 	}
 
 	/**
+	 * Remove accidental duplicated testimonial quote text.
+	 *
+	 * @param string $text Quote text.
+	 * @return string
+	 */
+	private function normalize_testimonial_quote( $text ) {
+		$text       = trim( wp_strip_all_tags( (string) $text ) );
+		$normalized = preg_replace( '/\s+/', ' ', $text );
+		$length     = strlen( $normalized );
+
+		if ( preg_match( '/^(.+?[.!?])\s+\1$/u', $normalized, $matches ) ) {
+			return trim( $matches[1] );
+		}
+
+		$sentences = preg_split( '/(?<=[.!?])\s+/u', $normalized, -1, PREG_SPLIT_NO_EMPTY );
+
+		if ( is_array( $sentences ) && count( $sentences ) > 1 && 0 === count( $sentences ) % 2 ) {
+			$half_sentences = (int) ( count( $sentences ) / 2 );
+			$first_half     = array_slice( $sentences, 0, $half_sentences );
+			$second_half    = array_slice( $sentences, $half_sentences );
+
+			if ( $first_half === $second_half ) {
+				return trim( implode( ' ', $first_half ) );
+			}
+		}
+
+		if ( 0 === $length || 0 !== $length % 2 ) {
+			return $text;
+		}
+
+		$half = (int) ( $length / 2 );
+
+		if ( substr( $normalized, 0, $half ) === substr( $normalized, $half ) ) {
+			return trim( substr( $normalized, 0, $half ) );
+		}
+
+		return $text;
+	}
+
+	/**
 	 * Render Testimonials section.
 	 */
 	protected function render() {
 		$settings     = $this->get_settings_for_display();
-		$stats        = ! empty( $settings['stats'] ) && is_array( $settings['stats'] ) ? $settings['stats'] : array();
 		$testimonials = ! empty( $settings['testimonials'] ) && is_array( $settings['testimonials'] ) ? $settings['testimonials'] : array();
 		?>
 		<section id="testimonials" class="ukits-custom-element w-[1156px]">
@@ -3532,35 +3514,42 @@ class UKITS_Custom_Element_Testimonials_Section extends UKITS_Custom_Element_Tem
 									<span class="testimonials-title-main text-white tracking-[-1.04px]"><?php echo esc_html( $settings['title_line_3'] ); ?></span>
 								</h2>
 							</div>
-							<div class="testimonials-stats flex w-[506px] h-20 items-center gap-8 absolute top-[125px] left-[554px]">
-								<?php foreach ( $stats as $index => $stat ) : ?>
-									<?php if ( $index > 0 ) : ?>
-										<div class="relative w-px h-20 bg-[#364153]"></div>
-									<?php endif; ?>
-									<div class="flex flex-col items-start relative">
-										<div class="testimonial-stat-value [font-family:'Inter-Bold',Helvetica] font-bold text-[#48842b] text-6xl tracking-[0] leading-[60px] whitespace-nowrap"><?php echo esc_html( $stat['value'] ); ?></div>
-										<div class="testimonial-stat-label [font-family:'Inter-Regular',Helvetica] font-normal text-[#99a1af] text-sm tracking-[0.70px] leading-5 whitespace-nowrap"><?php echo esc_html( $stat['label'] ); ?></div>
-									</div>
-								<?php endforeach; ?>
-							</div>
 						</div>
 					</div>
 					<div class="testimonials-grid relative self-stretch w-full h-[416.5px]">
 						<?php foreach ( $testimonials as $index => $testimonial ) : ?>
-							<div class="testimonial-card <?php echo esc_attr( $this->get_testimonial_position_class( $index ) ); ?> w-[337px] h-[416px] bg-[#ffffff0d] border border-solid border-[#ffffff1a]">
+							<?php
+							$quote       = $this->normalize_testimonial_quote( ! empty( $testimonial['quote'] ) ? $testimonial['quote'] : '' );
+							$stars_count = isset( $testimonial['stars_count'] ) ? absint( $testimonial['stars_count'] ) : 5;
+							$stars_count = min( 5, max( 0, $stars_count ) );
+							$rating_text = ! empty( $testimonial['rating_text'] ) ? $testimonial['rating_text'] : '4.9/5';
+							$stars       = str_repeat( '&#9733;', $stars_count );
+							?>
+							<div class="testimonial-card w-[337px] h-[416px] bg-[#ffffff0d] border border-solid border-[#ffffff1a]">
 								<img class="absolute top-[43px] left-[33px] h-6 w-7" src="<?php echo esc_url( ! empty( $testimonial['quote_icon']['url'] ) ? $testimonial['quote_icon']['url'] : UKITS_CUSTOM_ELEMENT_URL . 'assets/img/quote-green.svg' ); ?>" alt="" />
-								<div class="absolute top-[153px] left-[33px] w-[271px] h-[98px] flex">
-									<p class="testimonial-quote -mt-px w-[272px] h-[98px] [font-family:'Inter-Regular',Helvetica] font-normal text-white text-xl tracking-[0] leading-[32.5px]"><?php echo esc_html( $testimonial['quote'] ); ?></p>
+								<div class="testimonial-quote-wrap absolute top-[153px] left-[33px] w-[271px] h-[98px] flex">
+									<p class="testimonial-quote -mt-px w-[272px] h-[98px] [font-family:'Inter-Regular',Helvetica] font-normal text-white text-xl tracking-[0] leading-[32.5px]"><?php echo esc_html( $quote ); ?></p>
 								</div>
-								<div class="flex flex-col w-[271px] h-[101px] items-start gap-1 pt-[25px] pb-0 px-0 absolute top-[282px] left-[33px] border-t [border-top-style:solid] border-[#ffffff33]">
+								<div class="testimonial-author flex flex-col w-[271px] h-[101px] items-start gap-1 pt-[25px] pb-0 px-0 absolute top-[282px] left-[33px] border-t [border-top-style:solid] border-[#ffffff33]">
 									<div class="testimonial-name [font-family:'Inter-Bold',Helvetica] font-bold text-white text-lg tracking-[0.90px] leading-7 whitespace-nowrap"><?php echo esc_html( $testimonial['name'] ); ?></div>
 									<div class="testimonial-role [font-family:'Inter-Regular',Helvetica] font-normal text-[#99a1af] text-sm tracking-[0.35px] leading-5 whitespace-nowrap"><?php echo esc_html( $testimonial['role'] ); ?></div>
 									<div class="testimonial-location [font-family:'Inter-Regular',Helvetica] font-normal text-[#48842b] text-sm tracking-[0.35px] leading-5 whitespace-nowrap"><?php echo esc_html( $testimonial['location'] ); ?></div>
 								</div>
-								<div class="absolute top-px left-px w-16 h-16 border-t-4 [border-top-style:solid] border-l-4 [border-left-style:solid] border-[#48842b]"></div>
+								<div class="testimonial-rating" aria-label="<?php echo esc_attr( sprintf( /* translators: %s: testimonial rating. */ __( 'Rated %s', 'ukits-custom-element' ), $rating_text ) ); ?>">
+									<span class="testimonial-stars" aria-hidden="true"><?php echo wp_kses_post( $stars ); ?></span>
+									<span class="testimonial-rating-value"><?php echo esc_html( $rating_text ); ?></span>
+								</div>
+								<div class="testimonial-corner absolute top-px left-px w-16 h-16 border-t-4 [border-top-style:solid] border-l-4 [border-left-style:solid] border-[#48842b]"></div>
 							</div>
 						<?php endforeach; ?>
 					</div>
+					<?php if ( count( $testimonials ) > 1 ) : ?>
+						<div class="testimonials-dots" aria-label="<?php echo esc_attr__( 'Testimonials carousel navigation', 'ukits-custom-element' ); ?>">
+							<?php foreach ( $testimonials as $index => $testimonial ) : ?>
+								<button class="testimonial-dot" type="button" data-testimonial-index="<?php echo esc_attr( $index ); ?>" aria-label="<?php echo esc_attr( sprintf( /* translators: %d: slide number. */ __( 'Show testimonial %d', 'ukits-custom-element' ), $index + 1 ) ); ?>"></button>
+							<?php endforeach; ?>
+						</div>
+					<?php endif; ?>
 				</div>
 				<div class="testimonials-decor absolute top-0 left-[578px] w-[578px] h-[1002px] [background:linear-gradient(63deg,rgba(72,132,43,1)_25%,rgba(0,0,0,0)_25%),linear-gradient(297deg,rgba(72,132,43,1)_25%,rgba(0,0,0,0)_25%)] opacity-5"></div>
 			</div>
