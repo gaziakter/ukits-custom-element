@@ -4940,6 +4940,9 @@ body {
     linear-gradient(180deg, #ffffff 0%, #fbfdf9 38%, #f2f8ef 100%) !important;
   height: auto !important;
   min-height: 1002px !important;
+  padding-top: 120px !important;
+  padding-bottom: 120px !important;
+  box-sizing: border-box !important;
   overflow-x: visible !important;
   overflow-y: visible !important;
 }
@@ -5499,6 +5502,12 @@ body {
 
 .ukits-custom-element#testimonials .testimonials-grid::-webkit-scrollbar {
   display: none !important;
+}
+
+.ukits-custom-element#testimonials .testimonials-grid.is-dragging {
+  scroll-behavior: auto !important;
+  scroll-snap-type: none !important;
+  cursor: grabbing !important;
 }
 
 .ukits-custom-element#testimonials .testimonial-card {

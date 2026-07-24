@@ -2,7 +2,7 @@
 /**
  * Plugin Name: UKITS Custom Element
  * Description: Elementor custom widgets generated from the UKITS HTML template sections.
- * Version: 1.7.3
+ * Version: 1.7.5
  * Author: Gazi Akter
  * Author URI: https://gaziakter.com/
  * Text Domain: ukits-custom-element
