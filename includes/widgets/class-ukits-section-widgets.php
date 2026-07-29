@@ -3012,6 +3012,29 @@ class UKITS_Custom_Element_Courses_Section extends UKITS_Custom_Element_Template
 			)
 		);
 
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			array(
+				'name'           => 'vat_typography',
+				'label'          => esc_html__( 'VAT Typography', 'ukits-custom-element' ),
+				'selector'       => '{{WRAPPER}} #courses .course-vat',
+				'fields_options' => array(
+					'font_size'   => array(
+						'default' => array(
+							'size' => 16,
+							'unit' => 'px',
+						),
+					),
+					'font_style'  => array(
+						'default' => 'italic',
+					),
+					'font_weight' => array(
+						'default' => '600',
+					),
+				),
+			)
+		);
+
 		$this->add_control(
 			'course_title_color',
 			array(
@@ -3089,7 +3112,7 @@ class UKITS_Custom_Element_Courses_Section extends UKITS_Custom_Element_Template
 									<div class="flex w-[422px] h-16 items-start justify-between relative">
 										<div class="flex flex-col h-16 items-start gap-2 relative">
 											<div class="course-duration relative self-stretch w-full h-5 [font-family:'Inter-Regular',Helvetica] font-normal text-[#ffffffcc] text-sm tracking-[2.80px] leading-5 whitespace-nowrap"><?php echo esc_html( $course['duration'] ); ?></div>
-											<div class="course-price relative w-fit mt-[-1.00px] [font-family:'Inter-Bold',Helvetica] font-bold text-white text-3xl tracking-[0] leading-9 whitespace-nowrap"><?php echo esc_html( $course['price'] ); ?></div>
+											<div class="course-price relative w-fit mt-[-1.00px] [font-family:'Inter-Bold',Helvetica] font-bold text-white text-3xl tracking-[0] leading-9 whitespace-nowrap"><?php echo $this->render_course_price( $course['price'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></div>
 										</div>
 										<div class="course-icon flex w-12 h-12 items-center justify-center relative border-2 border-solid border-white">
 											<img class="h-5 w-5" src="<?php echo esc_url( ! empty( $course['icon']['url'] ) ? $course['icon']['url'] : UKITS_CUSTOM_ELEMENT_URL . 'assets/img/arrow-right-white.svg' ); ?>" alt="" />
@@ -3125,6 +3148,22 @@ class UKITS_Custom_Element_Courses_Section extends UKITS_Custom_Element_Template
 		);
 
 		return isset( $positions[ $index ] ) ? $positions[ $index ] : 'relative';
+	}
+
+	/**
+	 * Render the VAT suffix separately so it can have its own typography.
+	 *
+	 * @param string $price Course price text.
+	 * @return string
+	 */
+	private function render_course_price( $price ) {
+		$price = trim( (string) $price );
+
+		if ( preg_match( '/^(.*?)(\s*\+VAT)$/i', $price, $matches ) ) {
+			return '<span class="course-price-main">' . esc_html( trim( $matches[1] ) ) . '</span><span class="course-vat">+VAT</span>';
+		}
+
+		return '<span class="course-price-main">' . esc_html( $price ) . '</span>';
 	}
 }
 
@@ -3516,32 +3555,40 @@ class UKITS_Custom_Element_Testimonials_Section extends UKITS_Custom_Element_Tem
 							</div>
 						</div>
 					</div>
-					<div class="testimonials-grid relative self-stretch w-full h-[416.5px]">
-						<?php foreach ( $testimonials as $index => $testimonial ) : ?>
-							<?php
-							$quote       = $this->normalize_testimonial_quote( ! empty( $testimonial['quote'] ) ? $testimonial['quote'] : '' );
-							$stars_count = isset( $testimonial['stars_count'] ) ? absint( $testimonial['stars_count'] ) : 5;
-							$stars_count = min( 5, max( 0, $stars_count ) );
-							$rating_text = ! empty( $testimonial['rating_text'] ) ? $testimonial['rating_text'] : '4.9/5';
-							$stars       = str_repeat( '&#9733;', $stars_count );
-							?>
-							<div class="testimonial-card w-[337px] h-[416px] bg-[#ffffff0d] border border-solid border-[#ffffff1a]">
-								<img class="absolute top-[43px] left-[33px] h-6 w-7" src="<?php echo esc_url( ! empty( $testimonial['quote_icon']['url'] ) ? $testimonial['quote_icon']['url'] : UKITS_CUSTOM_ELEMENT_URL . 'assets/img/quote-green.svg' ); ?>" alt="" />
-								<div class="testimonial-quote-wrap absolute top-[153px] left-[33px] w-[271px] h-[98px] flex">
-									<p class="testimonial-quote -mt-px w-[272px] h-[98px] [font-family:'Inter-Regular',Helvetica] font-normal text-white text-xl tracking-[0] leading-[32.5px]"><?php echo esc_html( $quote ); ?></p>
+					<div class="testimonials-carousel-shell">
+						<?php if ( count( $testimonials ) > 1 ) : ?>
+							<button class="testimonial-arrow testimonial-arrow-prev" type="button" aria-label="<?php echo esc_attr__( 'Previous testimonial', 'ukits-custom-element' ); ?>"><span aria-hidden="true">&#8592;</span></button>
+						<?php endif; ?>
+						<div class="testimonials-grid relative self-stretch w-full h-[416.5px]">
+							<?php foreach ( $testimonials as $index => $testimonial ) : ?>
+								<?php
+								$quote       = $this->normalize_testimonial_quote( ! empty( $testimonial['quote'] ) ? $testimonial['quote'] : '' );
+								$stars_count = isset( $testimonial['stars_count'] ) ? absint( $testimonial['stars_count'] ) : 5;
+								$stars_count = min( 5, max( 0, $stars_count ) );
+								$rating_text = ! empty( $testimonial['rating_text'] ) ? $testimonial['rating_text'] : '4.9/5';
+								$stars       = str_repeat( '&#9733;', $stars_count );
+								?>
+								<div class="testimonial-card w-[337px] h-[416px] bg-[#ffffff0d] border border-solid border-[#ffffff1a]">
+									<img class="absolute top-[43px] left-[33px] h-6 w-7" src="<?php echo esc_url( ! empty( $testimonial['quote_icon']['url'] ) ? $testimonial['quote_icon']['url'] : UKITS_CUSTOM_ELEMENT_URL . 'assets/img/quote-green.svg' ); ?>" alt="" />
+									<div class="testimonial-quote-wrap absolute top-[153px] left-[33px] w-[271px] h-[98px] flex">
+										<p class="testimonial-quote -mt-px w-[272px] h-[98px] [font-family:'Inter-Regular',Helvetica] font-normal text-white text-xl tracking-[0] leading-[32.5px]"><?php echo esc_html( $quote ); ?></p>
+									</div>
+									<div class="testimonial-author flex flex-col w-[271px] h-[101px] items-start gap-1 pt-[25px] pb-0 px-0 absolute top-[282px] left-[33px] border-t [border-top-style:solid] border-[#ffffff33]">
+										<div class="testimonial-name [font-family:'Inter-Bold',Helvetica] font-bold text-white text-lg tracking-[0.90px] leading-7 whitespace-nowrap"><?php echo esc_html( $testimonial['name'] ); ?></div>
+										<div class="testimonial-role [font-family:'Inter-Regular',Helvetica] font-normal text-[#99a1af] text-sm tracking-[0.35px] leading-5 whitespace-nowrap"><?php echo esc_html( $testimonial['role'] ); ?></div>
+										<div class="testimonial-location [font-family:'Inter-Regular',Helvetica] font-normal text-[#48842b] text-sm tracking-[0.35px] leading-5 whitespace-nowrap"><?php echo esc_html( $testimonial['location'] ); ?></div>
+									</div>
+									<div class="testimonial-rating" aria-label="<?php echo esc_attr( sprintf( /* translators: %s: testimonial rating. */ __( 'Rated %s', 'ukits-custom-element' ), $rating_text ) ); ?>">
+										<span class="testimonial-stars" aria-hidden="true"><?php echo wp_kses_post( $stars ); ?></span>
+										<span class="testimonial-rating-value"><?php echo esc_html( $rating_text ); ?></span>
+									</div>
+									<div class="testimonial-corner absolute top-px left-px w-16 h-16 border-t-4 [border-top-style:solid] border-l-4 [border-left-style:solid] border-[#48842b]"></div>
 								</div>
-								<div class="testimonial-author flex flex-col w-[271px] h-[101px] items-start gap-1 pt-[25px] pb-0 px-0 absolute top-[282px] left-[33px] border-t [border-top-style:solid] border-[#ffffff33]">
-									<div class="testimonial-name [font-family:'Inter-Bold',Helvetica] font-bold text-white text-lg tracking-[0.90px] leading-7 whitespace-nowrap"><?php echo esc_html( $testimonial['name'] ); ?></div>
-									<div class="testimonial-role [font-family:'Inter-Regular',Helvetica] font-normal text-[#99a1af] text-sm tracking-[0.35px] leading-5 whitespace-nowrap"><?php echo esc_html( $testimonial['role'] ); ?></div>
-									<div class="testimonial-location [font-family:'Inter-Regular',Helvetica] font-normal text-[#48842b] text-sm tracking-[0.35px] leading-5 whitespace-nowrap"><?php echo esc_html( $testimonial['location'] ); ?></div>
-								</div>
-								<div class="testimonial-rating" aria-label="<?php echo esc_attr( sprintf( /* translators: %s: testimonial rating. */ __( 'Rated %s', 'ukits-custom-element' ), $rating_text ) ); ?>">
-									<span class="testimonial-stars" aria-hidden="true"><?php echo wp_kses_post( $stars ); ?></span>
-									<span class="testimonial-rating-value"><?php echo esc_html( $rating_text ); ?></span>
-								</div>
-								<div class="testimonial-corner absolute top-px left-px w-16 h-16 border-t-4 [border-top-style:solid] border-l-4 [border-left-style:solid] border-[#48842b]"></div>
-							</div>
-						<?php endforeach; ?>
+							<?php endforeach; ?>
+						</div>
+						<?php if ( count( $testimonials ) > 1 ) : ?>
+							<button class="testimonial-arrow testimonial-arrow-next" type="button" aria-label="<?php echo esc_attr__( 'Next testimonial', 'ukits-custom-element' ); ?>"><span aria-hidden="true">&#8594;</span></button>
+						<?php endif; ?>
 					</div>
 					<?php if ( count( $testimonials ) > 1 ) : ?>
 						<div class="testimonials-dots" aria-label="<?php echo esc_attr__( 'Testimonials carousel navigation', 'ukits-custom-element' ); ?>">
@@ -4353,6 +4400,136 @@ class UKITS_Custom_Element_FAQ_Section extends UKITS_Custom_Element_Template_Wid
 class UKITS_Custom_Element_FinalCTA_Section extends UKITS_Custom_Element_Template_Widget {
 	protected $section_id = 'finalcta';
 	protected $widget_title = 'FinalCTA Section';
+
+	/**
+	 * Register the warehouse media control in addition to the template controls.
+	 */
+	protected function register_controls() {
+		parent::register_controls();
+
+		$this->start_controls_section(
+			'warehouse_media_section',
+			array(
+				'label' => esc_html__( 'Warehouse Media', 'ukits-custom-element' ),
+				'tab'   => Controls_Manager::TAB_CONTENT,
+			)
+		);
+
+		$this->add_control(
+			'warehouse_media_source',
+			array(
+				'label'   => esc_html__( 'Media Source', 'ukits-custom-element' ),
+				'type'    => Controls_Manager::SELECT,
+				'default' => 'youtube',
+				'options' => array(
+					'youtube' => esc_html__( 'YouTube', 'ukits-custom-element' ),
+					'upload'  => esc_html__( 'Uploaded Video or GIF', 'ukits-custom-element' ),
+				),
+			)
+		);
+
+		$this->add_control(
+			'warehouse_youtube_url',
+			array(
+				'label'       => esc_html__( 'YouTube URL', 'ukits-custom-element' ),
+				'type'        => Controls_Manager::URL,
+				'placeholder' => 'https://www.youtube.com/watch?v=...',
+				'default'     => array(
+					'url' => 'https://www.youtube.com/watch?v=oyJj7dJJW3g',
+				),
+				'condition'   => array(
+					'warehouse_media_source' => 'youtube',
+				),
+			)
+		);
+
+		$this->add_control(
+			'warehouse_media',
+			array(
+				'label'       => esc_html__( 'Video or GIF', 'ukits-custom-element' ),
+				'type'        => Controls_Manager::MEDIA,
+				'media_types' => array( 'video', 'image' ),
+				'default'     => array(
+					'url' => UKITS_CUSTOM_ELEMENT_URL . 'assets/img/final-cta-bg.jpg',
+				),
+				'description' => esc_html__( 'Upload an MP4, WebM, OGG, or animated GIF. Videos autoplay muted and loop continuously.', 'ukits-custom-element' ),
+				'condition'   => array(
+					'warehouse_media_source' => 'upload',
+				),
+			)
+		);
+
+		$this->end_controls_section();
+	}
+
+	/**
+	 * Render warehouse video/GIF inside the template media area.
+	 */
+	protected function render() {
+		$settings  = $this->get_settings_for_display();
+		$source    = ! empty( $settings['warehouse_media_source'] ) ? $settings['warehouse_media_source'] : 'youtube';
+		$media_url = ! empty( $settings['warehouse_media']['url'] ) ? $settings['warehouse_media']['url'] : UKITS_CUSTOM_ELEMENT_URL . 'assets/img/final-cta-bg.jpg';
+		$extension = strtolower( pathinfo( wp_parse_url( $media_url, PHP_URL_PATH ), PATHINFO_EXTENSION ) );
+		$is_video  = in_array( $extension, array( 'mp4', 'webm', 'ogg' ), true );
+		$html      = $this->get_default_html();
+
+		if ( 'youtube' === $source ) {
+			$youtube_url = ! empty( $settings['warehouse_youtube_url']['url'] ) ? $settings['warehouse_youtube_url']['url'] : 'https://www.youtube.com/watch?v=oyJj7dJJW3g';
+			$youtube_id  = $this->get_youtube_video_id( $youtube_url );
+			$embed_url   = 'https://www.youtube-nocookie.com/embed/' . rawurlencode( $youtube_id ) . '?autoplay=1&mute=1&loop=1&playlist=' . rawurlencode( $youtube_id ) . '&controls=0&rel=0&playsinline=1&modestbranding=1';
+			$media_html  = sprintf(
+				'<iframe class="final-media-asset final-media-asset--youtube" src="%1$s" title="%2$s" allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>',
+				esc_url( $embed_url ),
+				esc_attr__( 'Warehouse operations video', 'ukits-custom-element' )
+			);
+		} elseif ( $is_video ) {
+			$media_html = sprintf(
+				'<video class="final-media-asset" autoplay muted loop playsinline preload="metadata" aria-label="%1$s"><source src="%2$s" type="%3$s"></video>',
+				esc_attr__( 'Warehouse operations video', 'ukits-custom-element' ),
+				esc_url( $media_url ),
+				esc_attr( 'video/' . $extension )
+			);
+		} else {
+			$media_html = sprintf(
+				'<img class="final-media-asset" src="%1$s" alt="%2$s" />',
+				esc_url( $media_url ),
+				esc_attr__( 'Warehouse operations', 'ukits-custom-element' )
+			);
+		}
+
+		$html = $this->apply_text_settings( $html, $settings );
+		$html = $this->apply_asset_settings( $html, $settings );
+		$html = $this->apply_link_settings( $html, $settings );
+		$html = $this->apply_button_settings( $html, $settings );
+		$html = str_replace(
+			'<div class="final-media"></div>',
+			'<div class="final-media"><div class="final-media-viewport">' . $media_html . '</div><span class="final-media-corner final-media-corner--top" aria-hidden="true"></span><span class="final-media-corner final-media-corner--bottom" aria-hidden="true"></span><span class="final-media-label">' . esc_html__( 'WAREHOUSE OPERATIONS', 'ukits-custom-element' ) . '</span></div>',
+			$html
+		);
+		$html = $this->add_wrapper_class( $html );
+
+		echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
+
+	/**
+	 * Extract a YouTube video ID from common YouTube URL formats.
+	 *
+	 * @param string $url YouTube URL or video ID.
+	 * @return string
+	 */
+	private function get_youtube_video_id( $url ) {
+		$url = trim( (string) $url );
+
+		if ( preg_match( '/^[A-Za-z0-9_-]{11}$/', $url ) ) {
+			return $url;
+		}
+
+		if ( preg_match( '#(?:youtu\.be/|youtube(?:-nocookie)?\.com/(?:watch\?.*v=|embed/|shorts/))([A-Za-z0-9_-]{11})#i', $url, $matches ) ) {
+			return $matches[1];
+		}
+
+		return 'oyJj7dJJW3g';
+	}
 }
 
 class UKITS_Custom_Element_Footer_Section extends UKITS_Custom_Element_Template_Widget {

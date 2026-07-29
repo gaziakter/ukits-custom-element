@@ -59,6 +59,8 @@
 
       var cards = Array.prototype.slice.call(track.querySelectorAll('.testimonial-card:not(.is-carousel-clone)'));
       var dots = section ? Array.prototype.slice.call(section.querySelectorAll('.testimonial-dot')) : [];
+      var previousButton = section ? section.querySelector('.testimonial-arrow-prev') : null;
+      var nextButton = section ? section.querySelector('.testimonial-arrow-next') : null;
       var isDragging = false;
       var dragStartX = 0;
       var dragStartScroll = 0;
@@ -271,6 +273,24 @@
 
       track.addEventListener('pointerup', stopDragging);
       track.addEventListener('pointercancel', stopDragging);
+
+      function navigateBy(direction) {
+        var closestIndex = normalizeLoop(getClosestIndex());
+
+        scrollCardToCenter(closestIndex + direction, 'smooth');
+      }
+
+      if (previousButton) {
+        previousButton.addEventListener('click', function () {
+          navigateBy(-1);
+        });
+      }
+
+      if (nextButton) {
+        nextButton.addEventListener('click', function () {
+          navigateBy(1);
+        });
+      }
 
       window.setTimeout(function () {
         var initialIndex = 0;
