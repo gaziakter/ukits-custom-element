@@ -3772,56 +3772,19 @@ class UKITS_Custom_Element_Pricing_Section extends UKITS_Custom_Element_Template
 		$this->start_controls_section(
 			'pricing_cta_section',
 			array(
-				'label' => esc_html__( 'CTA', 'ukits-custom-element' ),
+				'label' => esc_html__( 'Contact Form', 'ukits-custom-element' ),
 				'tab'   => Controls_Manager::TAB_CONTENT,
 			)
 		);
 
 		$this->add_control(
-			'button_text',
+			'contact_form_id',
 			array(
-				'label'   => esc_html__( 'Button Text', 'ukits-custom-element' ),
-				'type'    => Controls_Manager::TEXT,
-				'default' => esc_html__( 'GET YOUR FREE QUOTE', 'ukits-custom-element' ),
-			)
-		);
-
-		$this->add_control(
-			'button_link',
-			array(
-				'label'       => esc_html__( 'Button Link', 'ukits-custom-element' ),
-				'type'        => Controls_Manager::URL,
-				'placeholder' => home_url( '/' ),
-				'default'     => array( 'url' => home_url( '/#footer' ) ),
-			)
-		);
-
-		$this->add_control(
-			'arrow_icon',
-			array(
-				'label'   => esc_html__( 'Button Arrow', 'ukits-custom-element' ),
-				'type'    => Controls_Manager::MEDIA,
-				'default' => array(
-					'url' => UKITS_CUSTOM_ELEMENT_URL . 'assets/img/arrow-right-white.svg',
-				),
-			)
-		);
-
-		$this->add_control(
-			'call_text',
-			array(
-				'label'   => esc_html__( 'Call Text', 'ukits-custom-element' ),
-				'type'    => Controls_Manager::TEXT,
-				'default' => esc_html__( 'CALL 0800 123 4567', 'ukits-custom-element' ),
-			)
-		);
-
-		$this->add_control(
-			'footnote',
-			array(
-				'label'   => esc_html__( 'Footnote', 'ukits-custom-element' ),
-				'type'    => Controls_Manager::TEXT,
-				'default' => esc_html__( 'ALL PRICES INCLUDE CERTIFICATION & MATERIALS', 'ukits-custom-element' ),
+				'label'       => esc_html__( 'Contact Form 7 Form', 'ukits-custom-element' ),
+				'type'        => Controls_Manager::SELECT,
+				'default'     => '107',
+				'options'     => $this->get_contact_form_options(),
+				'description' => esc_html__( 'Create or edit forms under Contact > Contact Forms.', 'ukits-custom-element' ),
 			)
 		);
 
@@ -3957,11 +3920,7 @@ class UKITS_Custom_Element_Pricing_Section extends UKITS_Custom_Element_Template
 	protected function render() {
 		$settings = $this->get_settings_for_display();
 		$cards    = ! empty( $settings['pricing_cards'] ) && is_array( $settings['pricing_cards'] ) ? $settings['pricing_cards'] : array();
-
-		$pricing_link = ! empty( $settings['button_link'] ) && is_array( $settings['button_link'] ) ? $settings['button_link'] : array();
-		$pricing_link['url'] = ! empty( $pricing_link['url'] ) && '#' !== $pricing_link['url'] ? $pricing_link['url'] : home_url( '/#footer' );
-		$this->add_link_attributes( 'pricing_button', $pricing_link );
-		$this->add_render_attribute( 'pricing_button', 'class', 'pricing-quote-button ukits-converted-button' );
+		$form_id  = ! empty( $settings['contact_form_id'] ) ? absint( $settings['contact_form_id'] ) : 107;
 		?>
 		<section id="pricing" class="ukits-custom-element w-[1156px]">
 			<div class="pricing-frame relative w-[1156px] h-[983px] bg-white">
@@ -3985,22 +3944,12 @@ class UKITS_Custom_Element_Pricing_Section extends UKITS_Custom_Element_Template
 						<div class="pricing-description-wrap h-[97.5px] w-[490px] mt-8 flex">
 							<p class="pricing-description -mt-px w-[490px] h-[98px] [font-family:'Inter-Regular',Helvetica] font-normal text-[#4a5565] text-xl tracking-[0] leading-[32.5px]"><?php echo esc_html( $settings['description'] ); ?></p>
 						</div>
-						<div class="pricing-actions flex w-[490px] h-[180px] relative mt-12 flex-col items-start gap-6">
-							<a <?php $this->print_render_attribute_string( 'pricing_button' ); ?>>
-								<div class="relative w-[250.27px] h-7">
-									<div class="absolute top-0 left-0 [font-family:'Inter-SemiBold',Helvetica] font-semibold text-white text-xl text-center tracking-[1.00px] leading-7 whitespace-nowrap"><?php echo esc_html( $settings['button_text'] ); ?></div>
-								</div>
-								<img class="h-6 w-6" src="<?php echo esc_url( ! empty( $settings['arrow_icon']['url'] ) ? $settings['arrow_icon']['url'] : UKITS_CUSTOM_ELEMENT_URL . 'assets/img/arrow-right-white.svg' ); ?>" alt="" />
-							</a>
-							<div class="pricing-call-box flex h-20 items-center justify-between px-12 py-6 relative self-stretch w-full border-2 border-solid border-black">
-								<div class="relative w-[220.45px] h-7">
-									<div class="absolute top-0 left-0 [font-family:'Inter-SemiBold',Helvetica] font-semibold text-black text-xl tracking-[1.00px] leading-7 whitespace-nowrap"><?php echo esc_html( $settings['call_text'] ); ?></div>
-								</div>
-								<div class="relative w-3 h-3 bg-[#48842b] rounded-[16777200px]"></div>
-							</div>
-						</div>
-						<div class="pricing-footnote w-[490px] mt-8 flex">
-							<p class="mt-[0.5px] w-[376px] h-5 [font-family:'Inter-Regular',Helvetica] font-normal text-[#6a7282] text-sm tracking-[0.70px] leading-5 whitespace-nowrap"><?php echo esc_html( $settings['footnote'] ); ?></p>
+						<div class="pricing-contact-form">
+							<?php if ( $form_id && shortcode_exists( 'contact-form-7' ) ) : ?>
+								<?php echo do_shortcode( '[contact-form-7 id="' . $form_id . '"]' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+							<?php else : ?>
+								<p class="pricing-form-notice"><?php echo esc_html__( 'Please install Contact Form 7 and select a form.', 'ukits-custom-element' ); ?></p>
+							<?php endif; ?>
 						</div>
 					</div>
 				</div>
@@ -4008,6 +3957,34 @@ class UKITS_Custom_Element_Pricing_Section extends UKITS_Custom_Element_Template
 			</div>
 		</section>
 		<?php
+	}
+
+	/**
+	 * Get Contact Form 7 forms for the Elementor selector.
+	 *
+	 * @return array
+	 */
+	private function get_contact_form_options() {
+		$options = array();
+		$forms   = get_posts(
+			array(
+				'post_type'      => 'wpcf7_contact_form',
+				'post_status'    => 'publish',
+				'posts_per_page' => -1,
+				'orderby'        => 'title',
+				'order'          => 'ASC',
+			)
+		);
+
+		foreach ( $forms as $form ) {
+			$options[ (string) $form->ID ] = $form->post_title;
+		}
+
+		if ( empty( $options ) ) {
+			$options[''] = esc_html__( 'No Contact Form 7 forms found', 'ukits-custom-element' );
+		}
+
+		return $options;
 	}
 
 	/**
