@@ -4453,7 +4453,7 @@ class UKITS_Custom_Element_FinalCTA_Section extends UKITS_Custom_Element_Templat
 		if ( 'youtube' === $source ) {
 			$youtube_url = ! empty( $settings['warehouse_youtube_url']['url'] ) ? $settings['warehouse_youtube_url']['url'] : 'https://www.youtube.com/watch?v=oyJj7dJJW3g';
 			$youtube_id  = $this->get_youtube_video_id( $youtube_url );
-			$embed_url   = 'https://www.youtube-nocookie.com/embed/' . rawurlencode( $youtube_id ) . '?autoplay=1&mute=1&loop=1&playlist=' . rawurlencode( $youtube_id ) . '&controls=0&rel=0&playsinline=1&modestbranding=1';
+			$embed_url   = 'https://www.youtube-nocookie.com/embed/' . rawurlencode( $youtube_id ) . '?autoplay=1&mute=1&loop=1&playlist=' . rawurlencode( $youtube_id ) . '&controls=0&rel=0&playsinline=1&modestbranding=1&cc_load_policy=0&iv_load_policy=3';
 			$media_html  = sprintf(
 				'<iframe class="final-media-asset final-media-asset--youtube" src="%1$s" title="%2$s" allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>',
 				esc_url( $embed_url ),
