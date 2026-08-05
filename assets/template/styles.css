@@ -5576,6 +5576,458 @@ body {
   }
 }
 
+/* Standalone Contact page form using the Contact Form 7 quote form. */
+.ukits-contact-page-section {
+  width: 100%;
+  padding: clamp(56px, 8vw, 110px) 24px;
+  background:
+    radial-gradient(circle at 50% 20%, rgba(72, 132, 43, 0.07), transparent 34%),
+    #ffffff;
+  box-sizing: border-box;
+}
+
+.ukits-contact-page-form {
+  position: relative;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 28px;
+  background: #f7faf5;
+  border: 1px solid rgba(72, 132, 43, 0.22);
+  box-shadow: 0 22px 54px rgba(15, 23, 42, 0.1);
+  box-sizing: border-box;
+}
+
+.ukits-contact-page-form::before {
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: 82px;
+  height: 4px;
+  background: #48842b;
+  content: "";
+}
+
+.ukits-contact-page-form .wpcf7,
+.ukits-contact-page-form .wpcf7-form {
+  width: 100%;
+  margin: 0;
+}
+
+.ukits-contact-page-form .ukits-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 16px;
+}
+
+.ukits-contact-page-form .ukits-form-field {
+  min-width: 0;
+}
+
+.ukits-contact-page-form .ukits-course-field,
+.ukits-contact-page-form .ukits-course-type-field,
+.ukits-contact-page-form .ukits-message-field {
+  grid-column: 1 / -1;
+}
+
+.ukits-contact-page-form label {
+  display: block;
+  min-width: 0;
+  margin: 0;
+}
+
+.ukits-contact-page-form label > span:first-child,
+.ukits-contact-page-form .ukits-field-label {
+  display: block;
+  margin-bottom: 8px;
+  color: #315b25;
+  font-family: "Inter-Bold", Helvetica, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  line-height: 1.2;
+}
+
+.ukits-contact-page-form .wpcf7-form-control-wrap {
+  display: block;
+}
+
+.ukits-contact-page-form input:not([type="submit"]):not([type="checkbox"]),
+.ukits-contact-page-form select,
+.ukits-contact-page-form textarea {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding-right: 15px;
+  padding-left: 15px;
+  color: #111827;
+  font-family: "Inter-Regular", Helvetica, sans-serif;
+  font-size: 15px;
+  background: #ffffff;
+  border: 1px solid #d8e0d4;
+  border-radius: 0;
+  outline: 0;
+  box-shadow: none;
+  box-sizing: border-box;
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.ukits-contact-page-form input:not([type="submit"]):not([type="checkbox"]),
+.ukits-contact-page-form select {
+  height: 52px;
+  line-height: 52px;
+}
+
+.ukits-contact-page-form select {
+  padding-right: 42px;
+  cursor: pointer;
+}
+
+.ukits-contact-page-form textarea {
+  height: 112px;
+  min-height: 112px;
+  max-height: 112px;
+  padding-top: 14px;
+  padding-bottom: 14px;
+  line-height: 1.5;
+  resize: none;
+}
+
+.ukits-contact-page-form input:focus,
+.ukits-contact-page-form select:focus,
+.ukits-contact-page-form textarea:focus {
+  border-color: #48842b;
+  box-shadow: 0 0 0 3px rgba(72, 132, 43, 0.12);
+}
+
+.ukits-contact-page-form input::placeholder,
+.ukits-contact-page-form textarea::placeholder {
+  color: #8a958f;
+  opacity: 1;
+}
+
+.ukits-contact-page-form em {
+  font-size: 9px;
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: 1px;
+  opacity: 0.72;
+}
+
+.ukits-contact-page-form .ukits-course-type-field .wpcf7-form-control {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+}
+
+.ukits-contact-page-form .ukits-course-type-field .wpcf7-list-item {
+  margin: 0;
+}
+
+.ukits-contact-page-form .ukits-course-type-field .wpcf7-list-item label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #34413a;
+  font-family: "Inter-Regular", Helvetica, sans-serif;
+  font-size: 14px;
+  line-height: 1.35;
+  cursor: pointer;
+}
+
+.ukits-contact-page-form input[type="checkbox"] {
+  width: 17px;
+  height: 17px;
+  margin: 0;
+  accent-color: #48842b;
+  cursor: pointer;
+}
+
+.ukits-contact-page-form input[type="submit"] {
+  display: block;
+  width: min(520px, 100%) !important;
+  max-width: 520px !important;
+  min-height: 58px;
+  margin: 22px auto 0 !important;
+  padding: 15px 24px;
+  color: #ffffff;
+  font-family: "Inter-SemiBold", Helvetica, sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 1.4px;
+  line-height: 1.3;
+  text-align: center;
+  background: #0a0a0a;
+  border: 0;
+  border-radius: 0;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: background-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+}
+
+.ukits-contact-page-form input[type="submit"]:hover,
+.ukits-contact-page-form input[type="submit"]:focus {
+  background: #48842b;
+  box-shadow: 0 10px 24px rgba(72, 132, 43, 0.24);
+  transform: translateY(-2px);
+}
+
+.ukits-contact-page-form .wpcf7-spinner {
+  position: absolute;
+  right: 36px;
+  bottom: 45px;
+  margin: 0;
+}
+
+.ukits-contact-page-form .wpcf7-not-valid-tip {
+  margin-top: 5px;
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+.ukits-contact-page-form .wpcf7-response-output {
+  margin: 16px 0 0;
+  padding: 10px 12px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.ukits-contact-form-notice {
+  max-width: 720px;
+  margin: 40px auto;
+  color: #7f1d1d;
+}
+
+@media (max-width: 480px) {
+  .ukits-contact-page-section {
+    padding: 40px 16px;
+  }
+
+  .ukits-contact-page-form {
+    padding: 24px 20px;
+  }
+
+  .ukits-contact-page-form .ukits-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Same form skin when CF7 is inserted directly with Elementor's Shortcode widget. */
+.elementor-widget-shortcode .wpcf7 {
+  position: relative;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 28px;
+  background: #f7faf5;
+  border: 1px solid rgba(72, 132, 43, 0.22);
+  box-shadow: 0 22px 54px rgba(15, 23, 42, 0.1);
+  box-sizing: border-box;
+}
+
+.elementor-widget-shortcode .wpcf7::before {
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: 82px;
+  height: 4px;
+  background: #48842b;
+  content: "";
+}
+
+.elementor-widget-shortcode .wpcf7-form {
+  width: 100%;
+  margin: 0;
+}
+
+.elementor-widget-shortcode .ukits-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 16px;
+}
+
+.elementor-widget-shortcode .ukits-form-field {
+  min-width: 0;
+}
+
+.elementor-widget-shortcode .ukits-course-field,
+.elementor-widget-shortcode .ukits-course-type-field,
+.elementor-widget-shortcode .ukits-message-field {
+  grid-column: 1 / -1;
+}
+
+.elementor-widget-shortcode .ukits-quote-form label {
+  display: block;
+  min-width: 0;
+  margin: 0;
+}
+
+.elementor-widget-shortcode .ukits-quote-form label > span:first-child,
+.elementor-widget-shortcode .ukits-field-label {
+  display: block;
+  margin-bottom: 8px;
+  color: #315b25;
+  font-family: "Inter-Bold", Helvetica, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  line-height: 1.2;
+}
+
+.elementor-widget-shortcode .wpcf7-form-control-wrap {
+  display: block;
+}
+
+.elementor-widget-shortcode input:not([type="submit"]):not([type="checkbox"]),
+.elementor-widget-shortcode select,
+.elementor-widget-shortcode textarea {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding-right: 15px;
+  padding-left: 15px;
+  color: #111827;
+  font-family: "Inter-Regular", Helvetica, sans-serif;
+  font-size: 15px;
+  background: #ffffff;
+  border: 1px solid #d8e0d4;
+  border-radius: 0;
+  outline: 0;
+  box-shadow: none;
+  box-sizing: border-box;
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.elementor-widget-shortcode input:not([type="submit"]):not([type="checkbox"]),
+.elementor-widget-shortcode select {
+  height: 52px;
+  line-height: 52px;
+}
+
+.elementor-widget-shortcode select {
+  padding-right: 42px;
+  cursor: pointer;
+}
+
+.elementor-widget-shortcode textarea {
+  height: 112px !important;
+  min-height: 112px !important;
+  max-height: 112px !important;
+  padding-top: 14px;
+  padding-bottom: 14px;
+  line-height: 1.5;
+  resize: none;
+}
+
+.elementor-widget-shortcode input:focus,
+.elementor-widget-shortcode select:focus,
+.elementor-widget-shortcode textarea:focus {
+  border-color: #48842b;
+  box-shadow: 0 0 0 3px rgba(72, 132, 43, 0.12);
+}
+
+.elementor-widget-shortcode input::placeholder,
+.elementor-widget-shortcode textarea::placeholder {
+  color: #8a958f;
+  opacity: 1;
+}
+
+.elementor-widget-shortcode .ukits-quote-form em {
+  font-size: 9px;
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: 1px;
+  opacity: 0.72;
+}
+
+.elementor-widget-shortcode .ukits-course-type-field .wpcf7-form-control {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+}
+
+.elementor-widget-shortcode .ukits-course-type-field .wpcf7-list-item {
+  margin: 0;
+}
+
+.elementor-widget-shortcode .ukits-course-type-field .wpcf7-list-item label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #34413a;
+  font-family: "Inter-Regular", Helvetica, sans-serif;
+  font-size: 14px;
+  line-height: 1.35;
+  cursor: pointer;
+}
+
+.elementor-widget-shortcode input[type="checkbox"] {
+  width: 17px;
+  height: 17px;
+  margin: 0;
+  accent-color: #48842b;
+  cursor: pointer;
+}
+
+.elementor-widget-shortcode input[type="submit"] {
+  display: block;
+  width: min(520px, 100%) !important;
+  max-width: 520px !important;
+  min-height: 58px;
+  margin: 22px auto 0 !important;
+  padding: 15px 24px;
+  color: #ffffff;
+  font-family: "Inter-SemiBold", Helvetica, sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 1.4px;
+  line-height: 1.3;
+  text-align: center;
+  background: #0a0a0a;
+  border: 0;
+  border-radius: 0;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: background-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+}
+
+.elementor-widget-shortcode input[type="submit"]:hover,
+.elementor-widget-shortcode input[type="submit"]:focus {
+  background: #48842b;
+  box-shadow: 0 10px 24px rgba(72, 132, 43, 0.24);
+  transform: translateY(-2px);
+}
+
+.elementor-widget-shortcode .wpcf7-spinner {
+  position: absolute;
+  right: 36px;
+  bottom: 45px;
+  margin: 0;
+}
+
+.elementor-widget-shortcode .wpcf7-not-valid-tip {
+  margin-top: 5px;
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+.elementor-widget-shortcode .wpcf7-response-output {
+  margin: 16px 0 0;
+  padding: 10px 12px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+@media (max-width: 480px) {
+  .elementor-widget-shortcode .wpcf7 {
+    padding: 24px 20px;
+  }
+
+  .elementor-widget-shortcode .ukits-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Pricing section full-width override. */
 @media (min-width: 861px) {
   .elementor-widget-ukits_pricing,

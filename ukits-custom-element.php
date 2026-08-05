@@ -2,7 +2,7 @@
 /**
  * Plugin Name: UKITS Custom Element
  * Description: Elementor custom widgets generated from the UKITS HTML template sections.
- * Version: 1.8.2
+ * Version: 1.8.3
  * Author: Gazi Akter
  * Author URI: https://gaziakter.com/
  * Text Domain: ukits-custom-element
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'UKITS_CUSTOM_ELEMENT_VERSION', '1.8.2' );
+define( 'UKITS_CUSTOM_ELEMENT_VERSION', '1.8.3' );
 define( 'UKITS_CUSTOM_ELEMENT_FILE', __FILE__ );
 define( 'UKITS_CUSTOM_ELEMENT_PATH', plugin_dir_path( __FILE__ ) );
 define( 'UKITS_CUSTOM_ELEMENT_URL', plugin_dir_url( __FILE__ ) );
@@ -36,11 +36,14 @@ final class UKITS_Custom_Element_Plugin {
 	public static function init() {
 		add_action( 'plugins_loaded', array( __CLASS__, 'load_textdomain' ) );
 		add_action( 'init', array( __CLASS__, 'register_nav_menus' ) );
+		add_action( 'init', array( __CLASS__, 'register_shortcodes' ) );
 		add_action( 'elementor/elements/categories_registered', array( __CLASS__, 'register_category' ) );
 		add_action( 'elementor/frontend/after_register_styles', array( __CLASS__, 'register_styles' ) );
 		add_action( 'elementor/frontend/after_register_scripts', array( __CLASS__, 'register_scripts' ) );
+		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_contact_page_styles' ) );
 		add_action( 'elementor/editor/after_enqueue_styles', array( __CLASS__, 'enqueue_editor_assets' ) );
 		add_action( 'elementor/editor/after_enqueue_scripts', array( __CLASS__, 'enqueue_editor_assets' ) );
+		add_action( 'elementor/preview/enqueue_styles', array( __CLASS__, 'enqueue_elementor_preview_styles' ) );
 		add_action( 'elementor/widgets/register', array( __CLASS__, 'register_widgets' ) );
 		add_action( 'admin_notices', array( __CLASS__, 'elementor_missing_notice' ) );
 		add_action( 'wp_head', array( __CLASS__, 'print_fallback_site_icon' ), 2 );
@@ -70,6 +73,39 @@ final class UKITS_Custom_Element_Plugin {
 				'footer-info'     => esc_html__( 'UKITS Footer Info Menu', 'ukits-custom-element' ),
 			)
 		);
+	}
+
+	/**
+	 * Register standalone shortcodes used outside Elementor widgets.
+	 */
+	public static function register_shortcodes() {
+		add_shortcode( 'ukits_contact_form', array( __CLASS__, 'render_contact_form_shortcode' ) );
+	}
+
+	/**
+	 * Render a styled Contact Form 7 form for the Contact page.
+	 *
+	 * @param array $atts Shortcode attributes.
+	 * @return string
+	 */
+	public static function render_contact_form_shortcode( $atts ) {
+		$atts = shortcode_atts(
+			array(
+				'id' => 111,
+			),
+			$atts,
+			'ukits_contact_form'
+		);
+
+		$form_id = absint( $atts['id'] );
+
+		wp_enqueue_style( 'ukits-custom-element-template' );
+
+		if ( ! $form_id || ! shortcode_exists( 'contact-form-7' ) ) {
+			return '<p class="ukits-contact-form-notice">' . esc_html__( 'Please install Contact Form 7 and select a valid form.', 'ukits-custom-element' ) . '</p>';
+		}
+
+		return '<section class="ukits-contact-page-section" aria-label="' . esc_attr__( 'Contact form', 'ukits-custom-element' ) . '"><div class="ukits-contact-page-form">' . do_shortcode( '[contact-form-7 id="' . $form_id . '"]' ) . '</div></section>';
 	}
 
 	/**
@@ -141,7 +177,7 @@ final class UKITS_Custom_Element_Plugin {
 			'ukits-custom-element-template',
 			UKITS_CUSTOM_ELEMENT_URL . 'assets/template/styles.css',
 			array( 'ukits-custom-element-globals' ),
-			UKITS_CUSTOM_ELEMENT_VERSION
+			UKITS_CUSTOM_ELEMENT_VERSION . '.' . filemtime( UKITS_CUSTOM_ELEMENT_PATH . 'assets/template/styles.css' )
 		);
 	}
 
@@ -172,6 +208,22 @@ final class UKITS_Custom_Element_Plugin {
 				'assetsUrl' => esc_url( UKITS_CUSTOM_ELEMENT_URL . 'assets/' ),
 			)
 		);
+	}
+
+	/**
+	 * Load the form skin when a direct Contact Form 7 shortcode is used.
+	 */
+	public static function enqueue_contact_page_styles() {
+		if ( is_page( 'contact' ) ) {
+			wp_enqueue_style( 'ukits-custom-element-template' );
+		}
+	}
+
+	/**
+	 * Ensure shortcode form styles load inside the Elementor preview canvas.
+	 */
+	public static function enqueue_elementor_preview_styles() {
+		wp_enqueue_style( 'ukits-custom-element-template' );
 	}
 
 	/**
