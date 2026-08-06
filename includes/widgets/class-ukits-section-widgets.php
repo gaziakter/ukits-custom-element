@@ -3653,7 +3653,7 @@ class UKITS_Custom_Element_Pricing_Section extends UKITS_Custom_Element_Template
 			array(
 				'label'   => esc_html__( 'Price', 'ukits-custom-element' ),
 				'type'    => Controls_Manager::TEXT,
-				'default' => esc_html__( '£299', 'ukits-custom-element' ),
+				'default' => esc_html__( '£250', 'ukits-custom-element' ),
 			)
 		);
 
@@ -3680,6 +3680,18 @@ class UKITS_Custom_Element_Pricing_Section extends UKITS_Custom_Element_Template
 			)
 		);
 
+		$cards->add_control(
+			'link',
+			array(
+				'label'       => esc_html__( 'Card Link', 'ukits-custom-element' ),
+				'type'        => Controls_Manager::URL,
+				'placeholder' => esc_html__( 'https://your-site.com/contact/', 'ukits-custom-element' ),
+				'default'     => array(
+					'url' => home_url( '/contact/' ),
+				),
+			)
+		);
+
 		$this->add_control(
 			'pricing_cards',
 			array(
@@ -3690,21 +3702,24 @@ class UKITS_Custom_Element_Pricing_Section extends UKITS_Custom_Element_Template
 				'default'     => array(
 					array(
 						'label' => 'COUNTERBALANCE',
-						'price' => '£299',
+						'price' => '£250',
 						'note'  => 'STARTING PRICE',
 						'style' => 'dark',
+						'link'  => array( 'url' => home_url( '/contact/' ) ),
 					),
 					array(
 						'label' => 'REFRESHER COURSE',
-						'price' => '£199',
+						'price' => '£200',
 						'note'  => 'STARTING PRICE',
 						'style' => 'green',
+						'link'  => array( 'url' => home_url( '/contact/' ) ),
 					),
 					array(
 						'label' => 'BUSINESS TRAINING',
 						'price' => 'CUSTOM',
 						'note'  => 'TAILORED QUOTE',
 						'style' => 'outline',
+						'link'  => array( 'url' => home_url( '/contact/' ) ),
 					),
 				),
 			)
@@ -3993,11 +4008,24 @@ class UKITS_Custom_Element_Pricing_Section extends UKITS_Custom_Element_Template
 	 * @param array $card Pricing card settings.
 	 */
 	private function render_pricing_card( $card ) {
-		$style = isset( $card['style'] ) ? $card['style'] : 'dark';
+		$style        = isset( $card['style'] ) ? $card['style'] : 'dark';
+		$is_refresher = 'REFRESHER COURSE' === strtoupper( trim( (string) ( $card['label'] ?? '' ) ) );
+		$link         = ! empty( $card['link'] ) && is_array( $card['link'] ) ? $card['link'] : array();
+		$link_url     = ! empty( $link['url'] ) ? $link['url'] : home_url( '/contact/' );
+		$link_target  = ! empty( $link['is_external'] ) ? '_blank' : '';
+		$link_rel     = array();
+
+		if ( $link_target ) {
+			$link_rel[] = 'noopener';
+		}
+
+		if ( ! empty( $link['nofollow'] ) ) {
+			$link_rel[] = 'nofollow';
+		}
 
 		if ( 'outline' === $style ) {
 			?>
-			<div class="pricing-card pricing-custom relative self-stretch w-full h-[220px] border-4 border-solid border-black">
+			<a class="pricing-card pricing-custom relative self-stretch w-full h-[220px] border-4 border-solid border-black" href="<?php echo esc_url( $link_url ); ?>"<?php echo $link_target ? ' target="' . esc_attr( $link_target ) . '"' : ''; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><?php echo $link_rel ? ' rel="' . esc_attr( implode( ' ', $link_rel ) ) . '"' : ''; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 				<div class="pricing-custom-eyebrow absolute top-11 left-11 w-[402px] h-5 flex">
 					<div class="mt-[0.5px] w-[207px] h-5 [font-family:'Inter-Regular',Helvetica] font-normal text-[#6a7282] text-sm tracking-[4.20px] leading-5 whitespace-nowrap"><?php echo esc_html( $card['label'] ); ?></div>
 				</div>
@@ -4007,14 +4035,14 @@ class UKITS_Custom_Element_Pricing_Section extends UKITS_Custom_Element_Template
 				<div class="pricing-custom-note absolute top-[152px] left-11 w-[402px] h-6 flex">
 					<div class="-mt-px w-[147px] h-6 [font-family:'Inter-Regular',Helvetica] font-normal text-[#4a5565] text-base tracking-[0.80px] leading-6 whitespace-nowrap"><?php echo esc_html( $card['note'] ); ?></div>
 				</div>
-			</div>
+			</a>
 			<?php
 			return;
 		}
 
 		$bg_class = 'green' === $style ? 'bg-[#48842b]' : 'bg-black';
 		?>
-		<div class="pricing-card relative self-stretch w-full h-[212px] <?php echo esc_attr( $bg_class ); ?> overflow-hidden">
+		<a class="pricing-card<?php echo $is_refresher ? ' pricing-card-refresher' : ''; ?> relative self-stretch w-full h-[212px] <?php echo esc_attr( $bg_class ); ?> overflow-hidden" href="<?php echo esc_url( $link_url ); ?>"<?php echo $link_target ? ' target="' . esc_attr( $link_target ) . '"' : ''; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><?php echo $link_rel ? ' rel="' . esc_attr( implode( ' ', $link_rel ) ) . '"' : ''; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 			<div class="absolute -top-16 left-[426px] w-32 h-32 bg-[#ffffff0d] rounded-[16777200px]"></div>
 			<div class="pricing-card-content absolute top-10 left-10 w-[410px] h-[132px] flex flex-col">
 				<div class="w-[410px] flex">
@@ -4027,7 +4055,7 @@ class UKITS_Custom_Element_Pricing_Section extends UKITS_Custom_Element_Template
 					<div class="-mt-px w-[140px] h-6 [font-family:'Inter-Regular',Helvetica] font-normal text-[#ffffffcc] text-base tracking-[0.80px] leading-6 whitespace-nowrap"><?php echo esc_html( $card['note'] ); ?></div>
 				</div>
 			</div>
-		</div>
+		</a>
 		<?php
 	}
 }

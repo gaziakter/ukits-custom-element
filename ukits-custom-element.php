@@ -2,7 +2,7 @@
 /**
  * Plugin Name: UKITS Custom Element
  * Description: Elementor custom widgets generated from the UKITS HTML template sections.
- * Version: 1.8.3
+ * Version: 1.8.5
  * Author: Gazi Akter
  * Author URI: https://gaziakter.com/
  * Text Domain: ukits-custom-element
@@ -18,8 +18,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'UKITS_CUSTOM_ELEMENT_VERSION', '1.8.3' );
-define( 'UKITS_CUSTOM_ELEMENT_FILE', __FILE__ );
+define( 'UKITS_CUSTOM_ELEMENT_VERSION', '1.8.5' );
+define( 'UKITS_CUSTOM_ELEM The key design with name is subject subject subjectENT_FILE', __FILE__ );
 define( 'UKITS_CUSTOM_ELEMENT_PATH', plugin_dir_path( __FILE__ ) );
 define( 'UKITS_CUSTOM_ELEMENT_URL', plugin_dir_url( __FILE__ ) );
 
